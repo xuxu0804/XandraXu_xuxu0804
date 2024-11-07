@@ -1,4 +1,7 @@
 let circles = []; 
+
+let arcProgress = 0; // Arc animation
+
 const points = [
     [4, 136], [95, 157], [137, 96], [136, 4], [97, 243], [242, 118],
     [264, 202], [305, 55], [356, 224], [201, 264], [53, 305], [75, 396],
@@ -7,6 +10,8 @@ const points = [
     [418, 162], [396, 76], [458, 12], [500, 21], [296, 0], [500, 182],
     [0, 28], [25, -10], [6, 458], [40, 540], [300, 500]
   ];
+
+
 
 // Class for circles with dot
 class DotCircle {
@@ -18,53 +23,60 @@ class DotCircle {
     this.numCircles = numCircles; // Number of concentric circles
     this.dotColor = dotColor; // Color for the dots on each circle
     this.fillColor = fillColor; // Fill color for the main circle
+    this.rotationAngle = 0; // Initial rotation angle
+    this.scaleFactor = 1; // Initial scale factor for size animation
+    this.scaleDirection = 1; // Direction of scaling (1 for growing, -1 for shrinking)
 
     // Calculate the step size to scale down each circle diameter
     this.diameterStep = (outerDiameter - innerDiameter) / (numCircles - 1);
-    
   }
 
   display() {
+    push();
+    translate(this.x, this.y);
+    rotate(this.rotationAngle); // Apply rotation based on time
+    this.rotationAngle += 0.01; // Increment the rotation angle
+    
+    // Apply scaling animation to the circle
+    scale(this.scaleFactor);
+    this.scaleFactor += this.scaleDirection * 0.01;//
+    if (this.scaleFactor > 1.5 || this.scaleFactor < 0.8) {
+      this.scaleDirection *= -1; // Reverse direction when reaching limits
+    }
+
     // Draw the filled main circle in the background
     noStroke(); // No border for the filled circle
     fill(this.fillColor); // Set fill color for the main circle
-    circle(this.x, this.y, this.outerDiameter); // Draw the main circle with full diameter
+    circle(0, 0, this.outerDiameter); // Draw the main circle with full diameter
 
     // Draw each concentric circle with dashed style
     for (let i = 0; i < this.numCircles; i++) {
-      // Calculate the current diameter based on the step size
       let currentDiameter = (this.outerDiameter - 4) - i * this.diameterStep;
-      // Call the function to draw a dashed circle at this diameter
-      this.drawDashedCircle(this.x, this.y, currentDiameter, 6, this.dotColor, 2); 
+      this.drawDashedCircle(0, 0, currentDiameter, 6, this.dotColor, 2); 
     }
+    pop();
   }
+  
 
   drawDashedCircle(x, y, diameter, dotSize, lineColor, spacing) {
-   // Set the color of the dots for the dashed line
     stroke(lineColor);
     noFill(); // Only dots, no fill color for the circle area
-
-    // Calculate radius and circumference for the current circle
     let radius = diameter / 2;
     let circumference = TWO_PI * radius;
-
-    // Determine the number of dots to fit around the circle with spacing
     let numDots = floor(circumference / (dotSize + spacing));
 
-    // Draw each dot in the dashed circle
     for (let i = 0; i < numDots; i++) {
-      // Calculate the angle for each dot's position around the circle
       let angle = map(i, 0, numDots, 0, TWO_PI);
-      // Calculate the X and Y position of each dot based on the angle
       let xDot = x + radius * cos(angle);
       let yDot = y + radius * sin(angle);
 
-      fill(lineColor); // Set fill color for the dot
-      noStroke(); // No outline for individual dots
-      circle(xDot, yDot, dotSize); // Draw the dot at calculated position
+      fill(lineColor);
+      noStroke();
+      circle(xDot, yDot, dotSize);
     }
   }
 }
+
 // Class for circles with multiple line
 class LineCircle {
   constructor(x, y, baseRadius, numConcentricCircles, strokeSize, backColor, stokeColor) {
@@ -86,8 +98,6 @@ class LineCircle {
       // Each concentric radius is reduced by radiusStep
       this.concentricRadii.push(baseRadius - i * radiusStep);
     }
-    
-    
   }
 
   display() {
@@ -108,6 +118,8 @@ class LineCircle {
     }
   }
 }
+
+
 // Class for circles with zigzag line
 class ZigzagCircle {
   constructor(x, y, outerRadius, innerRadius, numLines, fillColor, strokeColor) {
@@ -294,33 +306,68 @@ const circleClasses = {
 
 
 function setup() {
-  // Create a 500x500 pixel canvas for the drawing
   createCanvas(500, 500);
-  
-  // Draw a gradient background on the canvas
   drawGradient();
-  
-  // Create circle instances based on the parameters and class mappings
-  // The 'circleParams' object contains configurations for different circle types
-  // The 'circleClasses' object maps circle types to their respective class constructors
   createCircles(circleParams, circleClasses);
-  
-  // Structure to hold points for connecting and generating shapes
-  // connectPoints will draw lines or shapes between specified points
   connectPoints(points, 108);
-  
-  // Generate and draw random ellipses at the specified points
-  // The 'generateRandomEllipses' function adds visual interest by placing
-  // randomly sized and colored ellipses around the points
   generateRandomEllipses(points);
 }
 
 function draw() {
+  drawGradient();
+  for (let i = 0; i < circles.length; i++) {
+    circles[i].display();
+  }
+  generateRotatingEllipses(points); // Add rotating ellipses with trails
+}
+
+function generateRotatingEllipses(points) {
+  for (let i = 0; i < points.length; i++) {
+    let x = points[i][0];
+    let y = points[i][1];
+    let w = random(15, 20);
+    let h = random(15, 20);
+    let angle = millis() / 1000; // Time-based angle for continuous rotation
+
+    push();
+    translate(x, y);
+    rotate(angle); // Rotate each ellipse around its own center
+
+    // Set low alpha to create a trailing effect without blocking the background
+    stroke(232, 120, 15, 50);  // Orange color with transparency
+    strokeWeight(3);
+    fill(0, 50);  // Black fill color with transparency
+    ellipse(0, 0, w, h);
+
+    noStroke();
+    fill(255, 100); // White color with transparency
+    ellipse(0, 0, w / 3, h / 3);
+    pop();
+  }
+}
+
+// Function for background gradient
+function drawGradient() {
+  let topColor = color('#004e76');
+  let bottomColor = color('#0d7faa');
+  for (let y = 0; y <= height; y++) {
+    let inter = map(y, 0, height, 0, 1);
+    let c = lerpColor(topColor, bottomColor, inter);
+    stroke(c);
+    line(0, y, width, y);
+  }
+}
+
+
+function draw() {
+  drawGradient();
   
   // Loop through the array and call display() on each circle object
   for (let i = 0; i < circles.length; i++) {
     circles[i].display();
   }
+
+  arcProgress += 0.06; // speed
   
   // Draw specific pink arcs between the given points
   drawPinkArc([70, 70], [95, 157]);
@@ -328,30 +375,24 @@ function draw() {
   drawPinkArc([290, 290], [376, 316]);
   drawPinkArc([440, 250], [500, 182]);
   drawPinkArc([100, 480], [183, 500]);
+  
 }
 
 // Function to create circle instances based on given parameters and class mappings
 function createCircles(params, classes) {
-  // Iterate through each key in the params object to access different circle parameter sets
   for (let key in params) {
-    // Get the array of parameter sets for the current key
     let paramSetArray = params[key];
-    // Loop through each parameter set in the array
     for (let i = 0; i < paramSetArray.length; i++) {
-      // Extract the current parameter set
       const paramSet = paramSetArray[i];
-      // The first element of the parameter set specifies the type of circle to create
       const type = paramSet[0];
-      // Check if the circle class exists for the given type and create an instance
-      // The remaining elements in paramSet are passed as arguments to the class constructor
       let instance = classes[type] ? new classes[type](...paramSet.slice(1)) : null;
-      // If the instance was created successfully, add it to the circles array
       if (instance) {
         circles.push(instance);
       }
     }
   }
 }
+
 
 // function for background
 function drawGradient() {
@@ -367,20 +408,14 @@ function drawGradient() {
     line(0, y, width, y);
   }
 }
-// function for structure
+
+// Function to connect points and draw connections
 function connectPoints(points, maxDistance) {
-  // Loop through each point in the array 'points' and treat it as the starting point
   points.forEach((start, i) => {
-    // For each starting point, loop through the points again to get the endpoint
     points.forEach((end, j) => {
-      // Only consider pairs where the index 'i' is less than 'j' to avoid duplicate connections
       if (i < j) {
-        // Calculate the distance between the two points using the 'calculateDistance' function
         const distance = calculateDistance(...start, ...end);
-        
-        // If the distance between the points is less than or equal to the specified 'maxDistance'
         if (distance <= maxDistance) {
-          // Call 'drawConnection' to visually connect the two points, using the distance as a parameter
           drawConnection(start, end, distance);
         }
       }
@@ -389,51 +424,42 @@ function connectPoints(points, maxDistance) {
 }
 
 function drawConnection(start, end, distance) {
-  // Calculate the angle between the start and end points using the 'calculateAngle' function
   const angle = calculateAngle(...start, ...end);
-  // Calculate the X-axis radius for the ellipses based on the distance, adjusting it to fit
   let radiusX = (distance - 12) / 6;
-  // Define a fixed Y-axis radius for the ellipses
   let radiusY = 3;
-  // Save the current drawing state
+
   push();
-  // Translate the drawing origin to the starting point's coordinates
   translate(start[0], start[1]);
-  // Rotate the drawing context based on the calculated angle (convert angle to radians)
   rotate(radians(angle));
-  // Loop to create 3 ellipses along the line between the start and end points
+
   for (let i = 0; i < 3; i++) {
-    // Draw an ellipse at an offset along the line, using the calculated radii for X and Y
     createEllipse((12 + 6 + 2 * radiusX * i), 0, radiusX, radiusY);
   }
-  // Restore the previous drawing state to avoid affecting other parts of the canvas
+
   pop();
 }
 
 function generateRandomEllipses(points) {
-  // Loop through each point in the array
   for (let i = 0; i < points.length; i++) {
-    // Extract the x and y coordinates of the current point
     let x = points[i][0];
     let y = points[i][1];
-    // Generate random width (w) and height (h) for the ellipse
     let w = random(15, 20);
     let h = random(15, 20);
-    let angle = random(-PI / 9, PI / 9); // Generate a random angle for rotating the ellipse
-    push();
+    let angle = random(-PI / 9, PI / 9);
 
+    push();
     translate(x, y);
     rotate(angle);
 
-    stroke(232, 120, 15);  
-    strokeWeight(3);  
-    fill(0);  
-    // Draw the outer ellipse at the translated origin
+    stroke(232, 120, 15);
+    strokeWeight(3);
+    fill(0);
     ellipse(0, 0, w, h);
+
     noStroke();
     fill(255);
-    // Draw a smaller inner ellipse inside the outer one
     ellipse(0, 0, w / 3, h / 3);
+
     pop();
   }
 }
@@ -467,10 +493,14 @@ function drawPinkArc(start, end) {
   stroke(255, 28, 90); // Pink color
   strokeWeight(6);
   noFill();
+
   push();
   translate(midX, midY);
   const angle = calculateAngle(...start, ...end);
   rotate(radians(angle));
-  arc(0, 0, distance, distance, PI, TWO_PI);
+  
+  // Draw an arc from the starting point to the current progress.
+  arc(0, 0, distance, distance, PI, PI + arcProgress);
   pop();
 }
+
