@@ -18,7 +18,7 @@ class DotCircle {
     this.numCircles = numCircles; // Number of concentric circles
     this.dotColor = dotColor; // Color for the dots on each circle
     this.fillColor = fillColor; // Fill color for the main circle
-    this.rotationAngle = 1; // Initial rotation angle
+    this.rotationAngle = 0; // Initial rotation angle
     this.scaleFactor = 1; // Initial scale factor for size animation
     this.scaleDirection = 1; // Direction of scaling (1 for growing, -1 for shrinking)
 
@@ -29,13 +29,13 @@ class DotCircle {
   display() {
     push();
     translate(this.x, this.y);
-    rotate(this.rotationAngle); // Apply rotation based on time
-    this.rotationAngle += 0.1; 
-    
+    // Apply rotation based on time
+    rotate(this.rotationAngle); 
+    this.rotationAngle += 0.01;  //Rotation speed
     scale(this.scaleFactor);
-    this.scaleFactor += this.scaleDirection * 0.02;//
-    if (this.scaleFactor > 1.5 || this.scaleFactor < 1) {
-      this.scaleDirection *= 1; // Reverse direction when reaching limits
+    this.scaleFactor += this.scaleDirection * 0.005;
+    if (this.scaleFactor > 1.5 || this.scaleFactor < 0.8) {
+      this.scaleDirection *= -1; // Reverse direction when reaching limits
     }
 
     // Draw the filled main circle in the background
@@ -321,20 +321,20 @@ function generateRotatingEllipses(points) {
     let y = points[i][1];
     let w = random(15, 20);
     let h = random(15, 20);
-    let angle = millis() / 1000; // Time-based angle for continuous rotation
+    let angle = millis() / 500; 
 
+    //Generate radom translation
     push();
     translate(x, y);
-    rotate(angle); // Rotate each ellipse around its own center
+    rotate(angle); 
 
-    // Set low alpha to create a trailing effect without blocking the background
-    stroke(232, 120, 15, 50);  // Orange color with transparency
+    stroke(232, 120, 15, 50);  
     strokeWeight(3);
-    fill(0, 50);  // Black fill color with transparency
+    fill(0, 50); 
     ellipse(0, 0, w, h);
 
     noStroke();
-    fill(255, 100); // White color with transparency
+    fill(255, 100); 
     ellipse(0, 0, w / 3, h / 3);
     pop();
   }
@@ -360,7 +360,7 @@ function draw() {
     circles[i].display();
   }
   
-  // Draw specific pink arcs between the given points
+  // Draw specific pink arcs from the given points
   drawPinkArc([70, 70], [95, 157]);
   drawPinkArc([180, 180], [242, 118]);
   drawPinkArc([290, 290], [376, 316]);
@@ -459,20 +459,23 @@ function createEllipse(xPos, yPos, radiusX, radiusY) {
   ellipse(xPos, yPos, radiusX * 2, radiusY * 2);
 }
 
-// Function to draw pink arcs between two points
+// Function to draw pink arcs with time-based animation
 function drawPinkArc(start, end) {
   const midX = (start[0] + end[0]) / 2;
   const midY = (start[1] + end[1]) / 2;
-  const distance = calculateDistance(...start, ...end);
+  const distance = calculateDistance(start[0], start[1], end[0], end[1]);
 
-  stroke(255, 28, 250, 0);
-  strokeWeight(6);
-  noFill();
+  const timeOffset = millis() / 800; // speed
+  const angleOffset = timeOffset % (2 * Math.PI); // Continuous rotation for 360 degrees
+
+  stroke(255, 28, 90, 255); 
+  strokeWeight(9);
+  fill(104, 190, 206, 235); 
 
   push();
   translate(midX, midY);
-  const angle = calculateAngle(...start, ...end);
-  rotate(radians(angle));
-  arc(0, 0, distance, distance, PI, TWO_PI);
+  const angle = calculateAngle(start[0], start[1], end[0], end[1]);
+  rotate(angle + angleOffset); // Add time-based oscillation to the rotation
+  arc(0, 0, distance, distance, Math.PI, Math.PI * 2);
   pop();
 }
