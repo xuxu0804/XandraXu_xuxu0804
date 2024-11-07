@@ -31,11 +31,11 @@ class DotCircle {
     translate(this.x, this.y);
     // Apply rotation based on time
     rotate(this.rotationAngle); 
-    this.rotationAngle += 0.01;  //Rotation speed
+    this.rotationAngle += 0.02; //Influence rotation speed
     scale(this.scaleFactor);
     this.scaleFactor += this.scaleDirection * 0.005;
     if (this.scaleFactor > 1.5 || this.scaleFactor < 0.8) {
-      this.scaleDirection *= -1; // Reverse direction when reaching limits
+      this.scaleDirection *= -1.2; // Reverse direction when reaching limits
     }
 
     // Draw the filled main circle in the background
@@ -475,7 +475,7 @@ function drawPinkArc(start, end) {
   push();
   translate(midX, midY);
   const angle = calculateAngle(start[0], start[1], end[0], end[1]);
-  rotate(angle + angleOffset); // Add time-based oscillation to the rotation
+  rotate(angle + angleOffset);
   arc(0, 0, distance, distance, Math.PI, Math.PI * 2);
   pop();
 }
