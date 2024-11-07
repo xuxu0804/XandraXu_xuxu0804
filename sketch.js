@@ -1,7 +1,4 @@
 let circles = []; 
-
-let arcProgress = 0; // Arc animation
-
 const points = [
     [4, 136], [95, 157], [137, 96], [136, 4], [97, 243], [242, 118],
     [264, 202], [305, 55], [356, 224], [201, 264], [53, 305], [75, 396],
@@ -10,8 +7,6 @@ const points = [
     [418, 162], [396, 76], [458, 12], [500, 21], [296, 0], [500, 182],
     [0, 28], [25, -10], [6, 458], [40, 540], [300, 500]
   ];
-
-
 
 // Class for circles with dot
 class DotCircle {
@@ -23,7 +18,7 @@ class DotCircle {
     this.numCircles = numCircles; // Number of concentric circles
     this.dotColor = dotColor; // Color for the dots on each circle
     this.fillColor = fillColor; // Fill color for the main circle
-    this.rotationAngle = 0; // Initial rotation angle
+    this.rotationAngle = 1; // Initial rotation angle
     this.scaleFactor = 1; // Initial scale factor for size animation
     this.scaleDirection = 1; // Direction of scaling (1 for growing, -1 for shrinking)
 
@@ -35,13 +30,12 @@ class DotCircle {
     push();
     translate(this.x, this.y);
     rotate(this.rotationAngle); // Apply rotation based on time
-    this.rotationAngle += 0.01; // Increment the rotation angle
+    this.rotationAngle += 0.1; 
     
-    // Apply scaling animation to the circle
     scale(this.scaleFactor);
-    this.scaleFactor += this.scaleDirection * 0.01;//
-    if (this.scaleFactor > 1.5 || this.scaleFactor < 0.8) {
-      this.scaleDirection *= -1; // Reverse direction when reaching limits
+    this.scaleFactor += this.scaleDirection * 0.02;//
+    if (this.scaleFactor > 1.5 || this.scaleFactor < 1) {
+      this.scaleDirection *= 1; // Reverse direction when reaching limits
     }
 
     // Draw the filled main circle in the background
@@ -98,6 +92,8 @@ class LineCircle {
       // Each concentric radius is reduced by radiusStep
       this.concentricRadii.push(baseRadius - i * radiusStep);
     }
+    
+    
   }
 
   display() {
@@ -118,8 +114,6 @@ class LineCircle {
     }
   }
 }
-
-
 // Class for circles with zigzag line
 class ZigzagCircle {
   constructor(x, y, outerRadius, innerRadius, numLines, fillColor, strokeColor) {
@@ -360,14 +354,11 @@ function drawGradient() {
 
 
 function draw() {
-  drawGradient();
   
   // Loop through the array and call display() on each circle object
   for (let i = 0; i < circles.length; i++) {
     circles[i].display();
   }
-
-  arcProgress += 0.06; // speed
   
   // Draw specific pink arcs between the given points
   drawPinkArc([70, 70], [95, 157]);
@@ -390,22 +381,6 @@ function createCircles(params, classes) {
         circles.push(instance);
       }
     }
-  }
-}
-
-
-// function for background
-function drawGradient() {
-  // Define the start and end colors of the gradient
-  let topColor = color('#004e76');  // Blue 
-  let bottomColor = color('#0d7faa');  // Light blue shade
-
-  // Draw the gradient background
-  for (let y = 0; y <= height; y++) {
-    let inter = map(y, 0, height, 0, 1);
-    let c = lerpColor(topColor, bottomColor, inter);
-    stroke(c);
-    line(0, y, width, y);
   }
 }
 
@@ -490,7 +465,7 @@ function drawPinkArc(start, end) {
   const midY = (start[1] + end[1]) / 2;
   const distance = calculateDistance(...start, ...end);
 
-  stroke(255, 28, 90); // Pink color
+  stroke(255, 28, 250, 0);
   strokeWeight(6);
   noFill();
 
@@ -498,9 +473,6 @@ function drawPinkArc(start, end) {
   translate(midX, midY);
   const angle = calculateAngle(...start, ...end);
   rotate(radians(angle));
-  
-  // Draw an arc from the starting point to the current progress.
-  arc(0, 0, distance, distance, PI, PI + arcProgress);
+  arc(0, 0, distance, distance, PI, TWO_PI);
   pop();
 }
-
