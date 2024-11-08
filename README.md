@@ -18,9 +18,8 @@
 #### My inspiration comes from the Australian Aboriginal dot painting style, which uses layered dot patterns and rich colours to showcase the unique characteristics of primal art, full of vitality and storytelling, with a sense of movement.
 ![An image of reference1](readmeImages/reference1.jpg)
 #### I applied a similar structure of multi-layered concentric circles and varying dot patterns in my code. I animated the circles to create a dynamic, expanding effect, simulating this style's vibrant, layered quality. Towards the end of the animation, I made the circles enlarge dramatically, creating an “explosive” effect that symbolizes a burst of energy.
-![An image of reference2](readmeImages/reference2.jpg) 
-![An image of reference3](readmeImages/reference3.jpg)
+![An image of reference2](readmeImages/referenceimage.jpg) 
 #### I also took inspiration from animated patterns and mandala shapes. The example of the GIF and circular animations helped influence the design and pace of my animations.
-![An image of reference4](readmeImages/MandalaVJLoopByNguluidu.gif)
+![An image of MandalaVJLoop](readmeImages/MandalaVJLoopByNguluidu.gif)
 
 
