@@ -37,8 +37,9 @@
 #### Each class uses `push()` and `pop()` to isolate transformations, allowing each circle to rotate and scale independently without affecting other elements on the canvas.
 ![An image of code2](readmeImages/code2.jpg) 
 
-#### For this animation, I relied on standard p5.js functions, but I adapted some techniques from external examples:
-#### The rotation and scaling techniques were refined based on p5.js animation tutorials I reviewed to better understand time-based transformations. The application of `scaleDirection` is based on the detailed definition of scale values in the video: [https://www.youtube.com/watch?v=pkHZTWOoTLM](https://www.youtube.com/watch?v=pkHZTWOoTLM).
+#### For this animation, the rotation and scaling techniques were refined based on p5.js animation tutorials I reviewed to better understand time-based transformations. The application of `scaleDirection` is based on the detailed definition of scale values in the video: [https://www.youtube.com/watch?v=pkHZTWOoTLM](https://www.youtube.com/watch?v=pkHZTWOoTLM).
 
+#### Final effect preview:
+![A gif of final](readmeImages/final.gif) 
 
 
