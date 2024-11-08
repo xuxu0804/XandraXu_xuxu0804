@@ -35,7 +35,8 @@ class DotCircle {
     this.rotationAngle += 0.02; //Influence rotation speed
     scale(this.scaleFactor);
     this.scaleFactor += this.scaleDirection * 0.005;
-    if (this.scaleFactor > 1.5 || this.scaleFactor < 0.8) { // Increase or decrease scale by a amount
+    // Increase or decrease scale by a amount
+    if (this.scaleFactor > 1.5 || this.scaleFactor < 0.8) { 
       // Reverse direction when reaching limits
       // Increases the speed of the scaling
       this.scaleDirection *= -1.2; 
@@ -481,7 +482,8 @@ function drawPinkArc(start, end) {
   translate(midX, midY); // Move to the midpoint of the arc
 
   const angle = calculateAngle(start[0], start[1], end[0], end[1]);
-  rotate(angle + angleOffset); //// Apply the rotation based on the angle and the time-based offset
+  // Apply the rotation based on the angle and the time-based offset
+  rotate(angle + angleOffset); 
   arc(0, 0, distance, distance, Math.PI, Math.PI * 2);
   pop();
 }
