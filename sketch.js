@@ -1,4 +1,5 @@
 let circles = []; 
+// Array of points for various positions on the canvas
 const points = [
     [4, 136], [95, 157], [137, 96], [136, 4], [97, 243], [242, 118],
     [264, 202], [305, 55], [356, 224], [201, 264], [53, 305], [75, 396],
@@ -34,8 +35,10 @@ class DotCircle {
     this.rotationAngle += 0.02; //Influence rotation speed
     scale(this.scaleFactor);
     this.scaleFactor += this.scaleDirection * 0.005;
-    if (this.scaleFactor > 1.5 || this.scaleFactor < 0.8) {
-      this.scaleDirection *= -1.2; // Reverse direction when reaching limits
+    if (this.scaleFactor > 1.5 || this.scaleFactor < 0.8) { // Increase or decrease scale by a amount
+      // Reverse direction when reaching limits
+      // Increases the speed of the scaling
+      this.scaleDirection *= -1.2; 
     }
 
     // Draw the filled main circle in the background
@@ -465,17 +468,20 @@ function drawPinkArc(start, end) {
   const midY = (start[1] + end[1]) / 2;
   const distance = calculateDistance(start[0], start[1], end[0], end[1]);
 
-  const timeOffset = millis() / 800; // speed
-  const angleOffset = timeOffset % (2 * Math.PI); // Continuous rotation for 360 degrees
+  // Set up a time-based offset for the rotation animation
+  const timeOffset = millis() / 400; // speed
+  const angleOffset = min(timeOffset, 2 * Math.PI * 7); // Stop after 7 rotations
 
-  stroke(255, 28, 90, 255); 
+  // Set the stroke and fill color for the arc
+  stroke(255, 28, 90); 
   strokeWeight(9);
   fill(104, 190, 206, 235); 
 
   push();
-  translate(midX, midY);
+  translate(midX, midY); // Move to the midpoint of the arc
+
   const angle = calculateAngle(start[0], start[1], end[0], end[1]);
-  rotate(angle + angleOffset);
+  rotate(angle + angleOffset); //// Apply the rotation based on the angle and the time-based offset
   arc(0, 0, distance, distance, Math.PI, Math.PI * 2);
   pop();
 }
