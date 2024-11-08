@@ -20,7 +20,9 @@
 #### I applied a similar structure of multi-layered concentric circles and varying dot patterns in my code. I animated the circles to create a dynamic, expanding effect, simulating this style's vibrant, layered quality. Towards the end of the animation, I made the circles enlarge dramatically, creating an “explosive” effect that symbolizes a burst of energy.
 ![An image of reference2](readmeImages/referenceimage.jpg) 
 #### I also took inspiration from animated patterns and mandala shapes. The example of the GIF and circular animations helped influence the design and pace of my animations.
-![An image of MandalaVJLoop](readmeImages/MandalaVJLoopByNguluidu.gif)
+![A gif of MandalaVJLoop](readmeImages/MandalaVJLoopByNguluidu.gif)
+#### The rhythm in the animation and graphic design of the Fibonacci spiral usually arises from the orderly variation of elements such as points, lines, shapes, and colors. Its curve is natural and smooth, visually conveying a sense of outward expansion, which is similar to the periodic changes in the Pendulum Wave, both demonstrating the beauty of patterns found in natural and physical phenomena.
+![A gif of FibonacciSpiralPoints](readmeImages/FibonacciSpiralPoints.gif)
 
 ## __Technical of Animation Code__
 #### In my code, the added animation brings rotation, scaling, and an "explosion" effect to the circles, making the overall visual more dynamic. Below is the technical explanation of the animation components in the code.
@@ -28,10 +30,12 @@
 #### 1. Each circle class has a `display()` method that defines its visual properties. In `DotCircle`, unique rotation and scaling animations are applied.
 #### 2. Each `DotCircle` instance achieves rotation through the `rotationAngle` and scaling via the `scaleFactor`. The `scaleDirection` in the code controls the scaling direction, ensuring the circles reverse their scale when they reach the maximum or minimum size, making the circles appear to "breathe" as they expand and shrink.
 #### 3. The scaling reverses each time by multiplying `scaleDirection` by -1.2, causing the scaling speed to accelerate with each iteration. This creates a final explosive visual effect.
+![An image of code1](readmeImages/code1.jpg) 
 #### PinkArc Animation:
 #### 1. A fill color is added to the arc to create a semi-circular effect.
 #### 2. A time-based rotation animation is generated, where `timeOffset` and `angleOffset` control the speed and direction of the arc's rotation, causing the arc to gradually rotate over time.
 #### Each class uses `push()` and `pop()` to isolate transformations, allowing each circle to rotate and scale independently without affecting other elements on the canvas.
+![An image of code2](readmeImages/code2.jpg) 
 
 #### For this animation, I relied on standard p5.js functions, but I adapted some techniques from external examples:
 #### The rotation and scaling techniques were refined based on p5.js animation tutorials I reviewed to better understand time-based transformations. The application of `scaleDirection` is based on the detailed definition of scale values in the video: [https://www.youtube.com/watch?v=pkHZTWOoTLM](https://www.youtube.com/watch?v=pkHZTWOoTLM).
